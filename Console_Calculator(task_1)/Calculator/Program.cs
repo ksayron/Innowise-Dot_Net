@@ -73,7 +73,7 @@
             }
             return action;
         }
-        public static void Calculate(double? x,double? y,string action_type)
+        public static void Calculate(double x,double y,string action_type)
         {
             Console.WriteLine("Результат:");
             switch (action_type)
