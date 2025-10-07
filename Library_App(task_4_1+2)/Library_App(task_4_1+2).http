@@ -1,0 +1,6 @@
+@Library_App_task_4_1_2__HostAddress = http://localhost:5279
+
+GET {{Library_App_task_4_1_2__HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
