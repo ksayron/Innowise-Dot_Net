@@ -47,7 +47,7 @@ namespace Library_App_task_4_1_2_
 
 
             app.MapControllers();
-            Console.WriteLine(Directory.GetCurrentDirectory());
+            
             app.Run();
         }
     }

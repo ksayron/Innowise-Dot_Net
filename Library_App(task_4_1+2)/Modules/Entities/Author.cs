@@ -10,7 +10,7 @@ namespace Library_App_task_4_1_2_.Modules.Entities
         public string Surname { get; set; }
 
         public DateOnly DateOfBirth { get; set; }
-        public ICollection<Book> Books { get; set; }
+        public ICollection<Book> Books { get; set; } = [];
 
         public Author()
         {

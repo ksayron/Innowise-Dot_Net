@@ -19,14 +19,6 @@ namespace Library_App_task_4_1_2_.Modules.RepositoryDAL
             try
             {
                 this.dB_Context.Authors.Add(author);
-                if(author.Books.Count > 0)
-                {
-                    foreach(var book in author.Books)
-                    {
-                        book.AuthorId = author.Id;
-                        this.dB_Context.Books.Add(book);
-                    }
-                }
                 this.dB_Context.SaveChanges();
             }
             catch (Exception ex)

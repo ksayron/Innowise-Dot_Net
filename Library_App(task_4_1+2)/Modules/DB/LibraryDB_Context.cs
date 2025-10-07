@@ -128,7 +128,8 @@ namespace Library_App_task_4_1_2_.Modules.DB
             modelBuilder.Entity<Author>()
                 .HasMany(a => a.Books)
                 .WithOne()
-                .HasForeignKey(b => b.AuthorId);
+                .HasForeignKey(b => b.AuthorId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

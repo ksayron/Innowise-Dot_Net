@@ -13,10 +13,26 @@ namespace Library_App_task_4_1_2_.Controllers
         {
             _authorRepository = authorRepository;
         }
-        [HttpGet(Name = "/GetAuthors")]
+        [HttpGet]
         public ActionResult<ICollection<Author>> GetAuthors()
         {
             var authors = _authorRepository.GetAuthors();
+            return Ok(authors);
+        }
+
+        [HttpGet("search")]
+        public ActionResult<ICollection<Author>> SearchAuthors([FromQuery] string? surname)
+        {
+            if (string.IsNullOrEmpty(surname)) return BadRequest("Пустой запрос");
+            var query = _authorRepository.GetAuthors().Where(a => a.Surname.Contains(surname));
+
+            return Ok(query.ToList());
+        }
+        
+        [HttpGet("book-count/{count:int}")]
+        public ActionResult<ICollection<Author>> GetAuthorsWithNBooks(int count)
+        {
+            var authors = _authorRepository.GetAuthors().Where(a => a.Books.Count == count);
             return Ok(authors);
         }
 
@@ -27,7 +43,7 @@ namespace Library_App_task_4_1_2_.Controllers
             if (author == null) { return BadRequest("Нет автора с таким id"); }
             return Ok(author);
         }
-        [HttpPost(Name = "AddAuthor")]
+        [HttpPost]
         public ActionResult CreateAuthor(Author author)
 
         {
