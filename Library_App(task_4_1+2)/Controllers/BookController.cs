@@ -11,6 +11,7 @@ namespace Library_App_task_4_1_2_.Controllers
     {
         private IBookRepository _bookRepository;
         private IAuthorRepository _authorRepository;
+
         public BookController(IBookRepository bookRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
@@ -25,67 +26,75 @@ namespace Library_App_task_4_1_2_.Controllers
         }
 
         [HttpGet("after/{year:int}")]
-        public ActionResult<ICollection<Book>> GetBooksPublishedAfter(int year)
+        public ActionResult<ICollection<Book>> GetBooksPublishedAfter(int queryYear)
         {
-            var books = _bookRepository.GetBooks().Where(b => b.PublishYear > year);
-            return Ok(books);
+            var matchingBooks = _bookRepository.GetBooks().Where(b => b.PublishYear > queryYear).ToList();
+            return Ok(matchingBooks);
         }
 
         [HttpGet("search")]
-        public ActionResult<ICollection<Book>> SearchBooks([FromQuery] string? title)
+        public ActionResult<ICollection<Book>> SearchBooks([FromQuery] string? queryTitle)
         {
-            if (string.IsNullOrEmpty(title)) return BadRequest("Пустой запрос");
-            var query = _bookRepository.GetBooks().Where(b => b.Title.Contains(title));
-            
-            return Ok(query.ToList());
+            if (string.IsNullOrEmpty(queryTitle))
+                return BadRequest("Пустой запрос");
+            var matchingBooks = _bookRepository.GetBooks().Where(b => b.Title.Contains(queryTitle)).ToList();
+
+            return Ok(matchingBooks);
         }
 
         [HttpGet("{id:int}")]
-        public ActionResult<Book> GetBookById(int id)
+        public ActionResult<Book> GetBookById(int searchId)
         {
-            var book = _bookRepository.GetBookById(id);
-            if (book is not null) return Ok(book);
-            return BadRequest($"Нет книги с id:{id}");
+            var book = _bookRepository.GetBookById(searchId);
+            if (book is not null)
+                return Ok(book);
+            return BadRequest($"Нет книги с id:{searchId}");
         }
 
         [HttpPost(Name = "AddBook")]
-        public ActionResult CreateBook(Book book)
+        public ActionResult CreateBook(Book parsedBook)
         {
-            if (book == null)
+            if (parsedBook == null)
                 return BadRequest("Книга не может быть null");
-            if ( book.Title == null || book.Title.Length < 1)
+            if (parsedBook.Title == null || parsedBook.Title.Length < 1)
                 return BadRequest("Название книги не может быть пустым");
-            if (_authorRepository.GetAuthorById(book.AuthorId) is null)
+            if (_authorRepository.GetAuthorById(parsedBook.AuthorId) is null)
                 return BadRequest("У книги обязан быть автор из имеющихся в реестре");
 
-            if (_bookRepository.CreateBook(book)) return Ok($"Книга {book.Title} был успешно добавлен");
-            else return StatusCode(500, "Произошла ошибка при добавлении");
+            if (_bookRepository.CreateBook(parsedBook))
+                return Ok($"Книга {parsedBook.Title} был успешно добавлен");
+            else
+                return StatusCode(500, "Произошла ошибка при добавлении");
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult DeleteBookById(int id)
+        public ActionResult DeleteBookById(int deletionId)
         {
-            if (_bookRepository.GetBookById(id) is null)
+            if (_bookRepository.GetBookById(deletionId) is null)
                 return BadRequest("Нет книги с таким id");
 
-            if (_bookRepository.RemoveBookById(id)) return Ok($"Книга с id:{id} была успешно удалена");
-            else return StatusCode(500, "Произошла ошибка при удалении");
+            if (_bookRepository.RemoveBookById(deletionId))
+                return Ok($"Книга с id:{deletionId} была успешно удалена");
+            else
+                return StatusCode(500, "Произошла ошибка при удалении");
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult UpdateBookById(int id, Book book)
+        public ActionResult UpdateBookById(int updateId, Book parsedBook)
         {
-            if (_bookRepository.GetBookById(id) is null)
+            if (_bookRepository.GetBookById(updateId) is null)
                 return BadRequest("Нет книги с таким id");
-            if (book == null)
+            if (parsedBook == null)
                 return BadRequest("Книга не может быть null");
-            if (book.Title.Length < 1 || book.Title == null)
+            if (parsedBook.Title.Length < 1 || parsedBook.Title == null)
                 return BadRequest("Название книги не может быть пустым");
-            if (_authorRepository.GetAuthorById(book.AuthorId) is null)
+            if (_authorRepository.GetAuthorById(parsedBook.AuthorId) is null)
                 return BadRequest("У книги обязан быть автор из имеющихся в реестре");
 
-            if (_bookRepository.UpdateBookById(id, book)) return Ok($"Книга с id:{id} была успешно обновлена");
-            else return StatusCode(500, "Произошла ошибка при обновлении");
+            if (_bookRepository.UpdateBookById(updateId, parsedBook))
+                return Ok($"Книга с id:{updateId} была успешно обновлена");
+            else
+                return StatusCode(500, "Произошла ошибка при обновлении");
         }
     }
 }

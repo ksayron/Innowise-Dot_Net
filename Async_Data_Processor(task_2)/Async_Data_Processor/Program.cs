@@ -4,53 +4,52 @@ namespace Async_Data_Processor
 {
     class Program
     {
-        async static Task Main(string[] args)
+        static async Task Main(string[] args)
         {
-            Stopwatch timer = new Stopwatch();
+            Stopwatch processingTimer = new Stopwatch();
             Console.WriteLine("Синхронная обработка:");
-            timer.Start();
-            TestingData();
-            timer.Stop();
-            Console.WriteLine($"Обработка заняла : {timer.Elapsed.TotalSeconds} секунд");
+            processingTimer.Start();
+            ProcessingDataSync();
+            processingTimer.Stop();
+            Console.WriteLine($"Обработка заняла : {processingTimer.Elapsed.TotalSeconds} секунд");
 
             Console.WriteLine("\nАсинхронная обработка:");
-            timer.Restart();
-            timer.Start();
-            await TestingDataAsync(); 
-            timer.Stop();
-            
-            Console.WriteLine($"Обработка заняла : {timer.Elapsed.TotalSeconds} секунд");
+            processingTimer.Restart();
+            processingTimer.Start();
+            await ProcessingDataAsync();
+            processingTimer.Stop();
+
+            Console.WriteLine($"Обработка заняла : {processingTimer.Elapsed.TotalSeconds} секунд");
         }
 
-        public static void ProcessData(string Data_Name)
+        public static void ProcessJSON(string fileName)
         {
-            Console.WriteLine($" Начало обработки {Data_Name}");
+            Console.WriteLine($" Начало обработки {fileName}");
             Thread.Sleep(3000);
-            Console.WriteLine($" {Data_Name} успешно обработан!");
+            Console.WriteLine($" {fileName} успешно обработан!");
         }
-        async public static Task ProcessDataAsync(string Data_Name)
+
+        public static async Task ProcessJSONAsync(string fileName)
         {
-            Console.WriteLine($" Начало обработки {Data_Name}");
-            await Task.Delay(3000); //передаем управление далее синхронному коду,пока не выполнится таск
-            Console.WriteLine($" {Data_Name} успешно обработан!");
+            Console.WriteLine($" Начало обработки {fileName}");
+            await Task.Delay(3000);
+            Console.WriteLine($" {fileName} успешно обработан!");
         }
-        public static void TestingData()
+
+        public static void ProcessingDataSync()
         {
-
-            ProcessData("dataset1.json");
-            ProcessData("dataset2.json");
-            ProcessData("dataset3.json");
-
+            ProcessJSON("dataset1.json");
+            ProcessJSON("dataset2.json");
+            ProcessJSON("dataset3.json");
         }
-        public async static Task TestingDataAsync()
-        {
-            
-            var task1 = ProcessDataAsync("dataset1.json");
-            var task2 = ProcessDataAsync("dataset2.json");
-            var task3 = ProcessDataAsync("dataset3.json");
 
-            await Task.WhenAll(task1, task2, task3);//таск выполнится при завершении всех вложенных
-            
+        public static async Task ProcessingDataAsync()
+        {
+            var processingTask1 = ProcessJSONAsync("dataset1.json");
+            var processingTask2 = ProcessJSONAsync("dataset2.json");
+            var processingTask3 = ProcessJSONAsync("dataset3.json");
+
+            await Task.WhenAll(processingTask1, processingTask2, processingTask3);
         }
     }
 }

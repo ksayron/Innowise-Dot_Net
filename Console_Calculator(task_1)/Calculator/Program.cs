@@ -4,93 +4,108 @@
     {
         static void Main(string[] args)
         {
-            double var1, var2;
-            string action;
-
-
+            double firstInput,
+                secondInput;
+            string actionType;
             do
             {
-                var1 = NumberInput();
-                action = ActionInput();
-                var2 = NumberInput();
+                firstInput = NumberInput();
+                actionType = ActionInput();
+                secondInput = NumberInput();
 
-                Calculate(var1, var2, action);
-                action = CalcActionInput();
-            } while (action == "1");
-           
+                Calculate(firstInput, secondInput, actionType);
+                actionType = CalcActionInput();
+            } while (actionType == "1");
         }
+
         public static double NumberInput()
         {
-            
-            double operation;
+            double numInput;
             while (true)
             {
                 Console.WriteLine("Введите число (например: 1,1):");
-                if (  double.TryParse(Console.ReadLine(),out operation))
-                    return operation;
+                if (double.TryParse(Console.ReadLine(), out numInput))
+                    return numInput;
                 Console.WriteLine("Неверный формат числа, попробуйте снова.");
-
             }
         }
+
         public static string ActionInput()
         {
-            string  action = "";
-            bool accepted_format = false;
-            while (!accepted_format)
+            string actionType = "";
+            bool acceptedFormat = false;
+            while (!acceptedFormat)
             {
                 Console.WriteLine("Выберите операцию +,-,*,/");
-                action = Console.ReadLine();
-                if (action != "+" && action != "-" && action != "*" && action != "/")
+                actionType = Console.ReadLine();
+                if (
+                    actionType != "+"
+                    && actionType != "-"
+                    && actionType != "*"
+                    && actionType != "/"
+                )
                 {
                     Console.WriteLine("Данные введены в неверном формате! Повторите ввод.");
                 }
                 else
                 {
-                    accepted_format = true;
+                    acceptedFormat = true;
                 }
-                
             }
-            return action;
+            return actionType;
         }
+
         public static string CalcActionInput()
         {
-            
-            string action = "";
-            bool accepted_format = false;
-            while (!accepted_format)
+            string actionType = "";
+            bool acceptedFormat = false;
+            while (!acceptedFormat)
             {
                 Console.WriteLine("Выберите операцию 1 - новая операция, 0 - закончить работу");
-                action = Console.ReadLine();
-                if (action != "1" && action != "0")
+                actionType = Console.ReadLine();
+                if (actionType != "1" && actionType != "0")
                 {
                     Console.WriteLine("Данные введены в неверном формате! Повторите ввод.");
                 }
                 else
                 {
-                    accepted_format = true;
+                    acceptedFormat = true;
                 }
-                
             }
-            return action;
+            return actionType;
         }
-        public static void Calculate(double x,double y,string action_type)
+
+        public static void Calculate(double firstVariable, double secondVariable, string actionType)
         {
             Console.WriteLine("Результат:");
-            switch (action_type)
+            switch (actionType)
             {
-
-                case "+": Console.WriteLine(x + y); break;
-                case "-": Console.WriteLine(x - y); break;
-                case "*": Console.WriteLine(x * y); break;
+                case "+":
+                {
+                    Console.WriteLine(firstVariable + secondVariable);
+                    break;
+                }
+                case "-":
+                {
+                    Console.WriteLine(firstVariable - secondVariable);
+                    break;
+                }
+                case "*":
+                {
+                    Console.WriteLine(firstVariable * secondVariable);
+                    break;
+                }
                 case "/":
+                {
+                    if (secondVariable == 0)
                     {
-                        if (y == 0) { Console.WriteLine("Невозможно делить на ноль!");break; }
-                        Console.WriteLine(x / y); break;
+                        Console.WriteLine("Невозможно делить на ноль!");
+                        break;
                     }
+                    Console.WriteLine(firstVariable / secondVariable);
+                    break;
+                }
             }
         }
-
     }
-
-   
 }

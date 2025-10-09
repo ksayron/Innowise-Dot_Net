@@ -1,27 +1,28 @@
-﻿using Library_App_task_4_1_2_.Modules.DB;
+﻿using System.Diagnostics.Contracts;
+using Library_App_task_4_1_2_.Modules.DB;
 using Library_App_task_4_1_2_.Modules.Entities;
 using Library_App_task_4_1_2_.Modules.InterfaceDAL;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Contracts;
 
 namespace Library_App_task_4_1_2_.Modules.RepositoryDAL
 {
     public interface IBookRepository : IGenericBookRepository<Book>;
+
     public class BookRepository : IBookRepository
     {
-        private LibraryDB_Context dB_Context;
+        private LibraryDbContext dbContext;
 
-        public BookRepository(LibraryDB_Context dB_Context)
+        public BookRepository(LibraryDbContext dB_Context)
         {
-            this.dB_Context = dB_Context;
+            this.dbContext = dB_Context;
         }
 
-        public bool CreateBook(Book book)
+        public bool CreateBook(Book newBook)
         {
             try
             {
-                this.dB_Context.Books.Add(book);
-                this.dB_Context.SaveChanges();
+                this.dbContext.Books.Add(newBook);
+                this.dbContext.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -31,27 +32,29 @@ namespace Library_App_task_4_1_2_.Modules.RepositoryDAL
             return true;
         }
 
-        public void Dispose() {}
+        public void Dispose() { }
 
-        public Book? GetBookById(int id)
+        public Book? GetBookById(int search)
         {
-            return this.dB_Context.Books.FirstOrDefault(b => b.Id==id);
+            return this.dbContext.Books.FirstOrDefault(b => b.Id == search);
         }
 
         public ICollection<Book> GetBooks()
         {
-            return this.dB_Context.Books.ToList();
+            return this.dbContext.Books.ToList();
         }
 
-        public bool RemoveBookById(int id)
+        public bool RemoveBookById(int removalId)
         {
-            
             try
             {
-                var book = GetBookById(id);
-                if (book is null) { throw new Exception("No book with this id"); }
-                this.dB_Context.Books.Remove(book);
-                this.dB_Context.SaveChanges();
+                var removedBook = GetBookById(removalId);
+                if (removedBook is null)
+                {
+                    throw new Exception("No book with this id");
+                }
+                this.dbContext.Books.Remove(removedBook);
+                this.dbContext.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -61,17 +64,20 @@ namespace Library_App_task_4_1_2_.Modules.RepositoryDAL
             return true;
         }
 
-        public bool UpdateBookById(int id, Book book)
+        public bool UpdateBookById(int updateId, Book updatedBook)
         {
             try
             {
-                var upd_book = GetBookById(id);
-                if (upd_book is null) { throw new Exception("No book with this id"); }
-                upd_book.Title = book.Title;
-                upd_book.AuthorId = book.AuthorId;
-                upd_book.PublishYear = book.PublishYear;
-                this.dB_Context.Books.Update(upd_book);
-                this.dB_Context.SaveChanges();
+                var oldBook = GetBookById(updateId);
+                if (oldBook is null)
+                {
+                    throw new Exception("No book with this id");
+                }
+                oldBook.Title = updatedBook.Title;
+                oldBook.AuthorId = updatedBook.AuthorId;
+                oldBook.PublishYear = updatedBook.PublishYear;
+                this.dbContext.Books.Update(oldBook);
+                this.dbContext.SaveChanges();
             }
             catch (Exception ex)
             {

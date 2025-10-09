@@ -1,24 +1,15 @@
-﻿using Azure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TaskManager_task_3_
+﻿namespace TaskManager_task_3_
 {
     public class TaskManager
     {
         public List<Task> Tasks { get; set; } = [];
 
-
         public TaskManager()
         {
-
             var repo = new TaskRepository();
             try
             {
-                Tasks = new List<Task>(repo.GetTasks());//клонируем всю коллекцию обьект а не только ссылку на нее
+                Tasks = new List<Task>(repo.GetTasks()); //клонируем всю коллекцию обьект а не только ссылку на нее
             }
             catch (Exception ex)
             {
@@ -32,29 +23,30 @@ namespace TaskManager_task_3_
             foreach (var task in Tasks)
             {
                 Console.WriteLine(task.Id + $" - {task.Title},{task.IsCompleted},{task.CreatedAt}");
-                Console.WriteLine(task.Description+'\n');
+                Console.WriteLine(task.Description + '\n');
             }
         }
 
         public void AddTask()
         {
             var new_task = new Task();
-            
-            while(new_task.Title == "")
+
+            while (new_task.Title == "")
             {
                 Console.WriteLine("\nВведите название задания:");
                 string str = Console.ReadLine();
-                if (str != null) new_task.Title = str;
+                if (str != null)
+                    new_task.Title = str;
             }
-            
+
             while (new_task.Description == "")
             {
                 Console.WriteLine("\nВведите описание задания:");
                 string str = Console.ReadLine();
-                if (str != null) new_task.Description = str;
+                if (str != null)
+                    new_task.Description = str;
             }
-            
-            
+
             var repo = new TaskRepository();
             try
             {
@@ -62,16 +54,14 @@ namespace TaskManager_task_3_
                 Tasks = new List<Task>(repo.GetTasks());
                 Console.WriteLine("\nЗадание добавлено\n");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            
         }
 
         public void CompleteTaskById()
         {
-         
             int id;
             var repo = new TaskRepository();
             while (true)
@@ -79,13 +69,15 @@ namespace TaskManager_task_3_
                 Console.WriteLine("Введите номер выполненного задания (например: 1):");
                 if (int.TryParse(Console.ReadLine(), out id))
                 {
-                    if (repo.GetTaskById(id) is not null) break;
-                    else Console.WriteLine("\nНет задания с таким номером, попробуйте снова.");
+                    if (repo.GetTaskById(id) is not null)
+                        break;
+                    else
+                        Console.WriteLine("\nНет задания с таким номером, попробуйте снова.");
                 }
-                else Console.WriteLine("\nНеверный формат числа, попробуйте снова.");
-
+                else
+                    Console.WriteLine("\nНеверный формат числа, попробуйте снова.");
             }
-            
+
             try
             {
                 repo.CompleteTask(id);
@@ -107,13 +99,15 @@ namespace TaskManager_task_3_
                 Console.WriteLine("Введите номер выполненного задания (например: 1):");
                 if (int.TryParse(Console.ReadLine(), out id))
                 {
-                    if (repo.GetTaskById(id) is not null) break;
-                    else Console.WriteLine("\nНет задания с таким номером, попробуйте снова.");
+                    if (repo.GetTaskById(id) is not null)
+                        break;
+                    else
+                        Console.WriteLine("\nНет задания с таким номером, попробуйте снова.");
                 }
-                else Console.WriteLine("\nНеверный формат числа, попробуйте снова.");
-
+                else
+                    Console.WriteLine("\nНеверный формат числа, попробуйте снова.");
             }
-            
+
             try
             {
                 repo.DeleteTask(id);
@@ -125,6 +119,5 @@ namespace TaskManager_task_3_
                 Console.WriteLine(ex.Message);
             }
         }
-
     }
 }

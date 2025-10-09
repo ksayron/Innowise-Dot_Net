@@ -3,9 +3,9 @@
     public interface IGenericBookRepository<T> : IDisposable
     {
         ICollection<T> GetBooks();
-        T? GetBookById(int id);
-        bool CreateBook(T book);
-        bool UpdateBookById(int id,T book);
-        bool RemoveBookById(int id);
+        T? GetBookById(int searchIdid);
+        bool CreateBook(T newBook);
+        bool UpdateBookById(int updateId, T updatedBook);
+        bool RemoveBookById(int removalId);
     }
 }
